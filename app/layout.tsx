@@ -67,8 +67,10 @@ export default async function RootLayout({
           </div>
         </header>
         <main className="flex-1 max-w-5xl w-full mx-auto px-5 py-8">{children}</main>
-        <footer className="text-center text-sm text-[var(--muted)] py-6 border-t border-[var(--border)]">
-          🐻 黑熊老師科展日誌 · 記錄研究的每一步
+        <footer className="text-center text-sm text-[var(--muted)] py-6 border-t border-[var(--border)] space-y-1">
+          <p>🐻 黑熊老師科展日誌 · 記錄研究的每一步</p>
+          <p>開發者：陳賢宗（黑熊老師）</p>
+          <p>© {new Date().getFullYear()} 陳賢宗（黑熊老師）．版權所有 All rights reserved.</p>
         </footer>
       </body>
     </html>
