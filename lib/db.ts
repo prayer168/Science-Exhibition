@@ -2,7 +2,8 @@ import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
 
-const DB_DIR = path.join(process.cwd(), "data");
+// DATA_DIR 可指向持久磁碟（Railway Volume）；本機未設定時預設用專案下的 data/
+const DB_DIR = process.env.DATA_DIR || path.join(process.cwd(), "data");
 const DB_PATH = path.join(DB_DIR, "journals.db");
 
 if (!fs.existsSync(DB_DIR)) {

@@ -107,7 +107,7 @@ export default async function Home({
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           key={p.id}
-                          src={`/uploads/${p.filename}`}
+                          src={`/api/uploads/${p.filename}`}
                           alt={p.original_name ?? "照片"}
                           className="h-28 w-28 object-cover rounded-lg border border-[var(--border)]"
                         />

@@ -9,6 +9,8 @@ const allowedEmails = (process.env.ALLOWED_EMAILS ?? "prayer168@gmail.com")
   .filter(Boolean);
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  // 部署在 Railway 等反向代理後方時需信任轉發的 Host 標頭
+  trustHost: true,
   providers: [Google],
   callbacks: {
     // 只允許清單內的 Google 帳號登入
