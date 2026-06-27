@@ -108,7 +108,67 @@ middleware.ts               # 保護 /admin 與寫入型 API
 
 ## 資料儲存
 
-- 日誌資料：`data/journals.db`（SQLite）
-- 上傳照片：`public/uploads/`
+- 日誌資料：SQLite，存於 `DATA_DIR`（本機預設 `data/journals.db`；Railway 上為 `/data/journals.db`，掛在持久 Volume）
+- 上傳照片：存於 `DATA_DIR/uploads`，透過 `/api/uploads/[name]` 路由提供（不再放 `public/`，以便容器重啟後保留）
 
-兩者都已加入 `.gitignore`，不會進版控。
+本機的 `data/` 已加入 `.gitignore`，不會進版控。
+
+---
+
+## 正式部署（Railway）
+
+已部署於 Railway：**https://science-exhibition-production.up.railway.app**
+
+- GitHub repo：`prayer168/Science-Exhibition`（Railway 監看此 repo，push 即自動部署）
+- 容器以 `Dockerfile` 建置（Node + Chromium + 思源黑體）
+- 持久磁碟：Railway Volume 掛載於 `/data`（日誌與照片都存這裡，重新部署不會遺失）
+
+### Railway 環境變數
+| 變數 | 說明 |
+|------|------|
+| `DATA_DIR` | `/data`（指向 Volume） |
+| `AUTH_URL` | `https://science-exhibition-production.up.railway.app`（務必正確，打錯登入會壞） |
+| `AUTH_SECRET` | NextAuth 簽章用隨機字串 |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Google OAuth 憑證 |
+| `ALLOWED_EMAILS` | 允許登入後台的 Google 帳號（逗號分隔） |
+
+> Railway 會自動注入 `PORT`（目前為 8080）；公開網域的 target port 需與其一致。
+
+---
+
+## 如何修改網站（日常維護流程）
+
+**核心：把改動 push 到 GitHub，Railway 就會自動重新部署。**
+
+1. **本機改程式碼**
+   ```bash
+   cd science-exhibition
+   # 編輯檔案…
+   ```
+2. **本機測試（建議）**
+   ```bash
+   npm run dev   # http://localhost:3000，測完 Ctrl+C
+   ```
+3. **推上 GitHub（觸發自動部署）**
+   ```bash
+   git add -A
+   git commit -m "描述改動"
+   git push
+   ```
+4. **Railway 自動部署** — 在 Railway → Deployments 看進度，約 2–5 分鐘變 Active，開網址確認。
+
+### 常見維護情境
+| 想做什麼 | 怎麼做 |
+|---------|--------|
+| 改功能 / 版面 | 改程式 → `git push` → 等 Railway 部署 |
+| 改環境變數（密鑰、允許 email…） | Railway → Variables 直接改（會自動重部署，**不用** push） |
+| 新增可登入的人 | `ALLOWED_EMAILS` 加 email；並到 Google「測試使用者」加同一個 email |
+| 改壞了要還原 | Railway → Deployments → 選正常的舊版 → ⋮ → Redeploy |
+| 看錯誤 | Railway → Deployments → 最新部署 → Deploy / Build Logs |
+| 備份資料 | Railway → Backups 分頁設定 Volume 備份 |
+
+### ⚠️ 注意
+- `.env.local`（含本機密鑰）永不進版控；正式密鑰只存在 Railway，兩邊分開。
+- `AUTH_URL` 一定要是正確的正式網址，打錯會導致登入失敗。
+- 不要刪除 `/data` Volume，否則所有日誌與照片會消失。
+- 資料庫結構（schema）大改時，因使用 SQLite，可能需處理既有資料，建議謹慎進行。
