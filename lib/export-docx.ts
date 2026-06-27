@@ -147,6 +147,26 @@ export async function buildDocx(journals: ExportJournal[]): Promise<Buffer> {
     journals.forEach((j) => children.push(...journalBlock(j)));
   }
 
+  // 版權頁尾
+  children.push(
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { before: 360 },
+      border: { top: { style: BorderStyle.SINGLE, size: 4, color: "E0D5C9", space: 8 } },
+      children: [new TextRun({ text: "開發者：陳賢宗（黑熊老師）", size: 18, color: "7A6153" })],
+    }),
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      children: [
+        new TextRun({
+          text: `© ${new Date().getFullYear()} 陳賢宗（黑熊老師）．版權所有 All rights reserved.`,
+          size: 18,
+          color: "7A6153",
+        }),
+      ],
+    })
+  );
+
   const doc = new Document({
     styles: {
       default: { document: { run: { font: "Microsoft JhengHei", size: 22 } } },

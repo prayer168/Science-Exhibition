@@ -104,6 +104,10 @@ export function buildHtml(journals: ExportJournal[], opts: { autoPrint?: boolean
     max-height: 160px; max-width: 220px; object-fit: contain;
     border: 1px solid #ccc; border-radius: 4px;
   }
+  .doc-footer {
+    margin-top: 36px; padding-top: 14px; border-top: 1px solid #e0d5c9;
+    text-align: center; font-size: 12px; color: #7a6153; line-height: 1.8;
+  }
   @media print {
     body { padding: 0; }
     .journal { page-break-inside: avoid; }
@@ -114,6 +118,10 @@ export function buildHtml(journals: ExportJournal[], opts: { autoPrint?: boolean
   <div class="doc-title">🐻 黑熊老師科展日誌</div>
   <div class="doc-sub">研究歷程紀錄</div>
   ${body}
+  <div class="doc-footer">
+    開發者：陳賢宗（黑熊老師）<br/>
+    © ${new Date().getFullYear()} 陳賢宗（黑熊老師）．版權所有 All rights reserved.
+  </div>
   ${opts.autoPrint ? "<script>window.onload=()=>window.print()</script>" : ""}
 </body>
 </html>`;
